@@ -7,7 +7,7 @@ public class MainThread extends Thread
 	 * Number of frames per second(number of {@link GameWindow#update()} and 
 	 * {@link GameWindow#draw()} methods calls.
 	 */
-	private int fps=30;
+	private int fps=60;
 	/**
 	 * Time when current game frame begins.
 	 */

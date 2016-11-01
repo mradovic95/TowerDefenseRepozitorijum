@@ -1,15 +1,20 @@
 package enemys;
 
+import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import graphics.Animation;
 import graphics.Vector2;
 import main_package.GameUtility;
 
-public  class Enemy 
+public class Enemy 
 {
+	private BufferedImage heltImage;
+	private boolean enabled;
 	private ArrayList<Animation> animacije;
 	private int x;
 	private int y;
@@ -17,13 +22,25 @@ public  class Enemy
 	private int height;
 	private Vector2 speed;
 	private int velocity;
-	
+	private int helts;
+	private int startHelts;
 	private int currentAinimation;
 	private int currentWaypoint;
 	private ArrayList<Vector2> waypoints;
-	public Enemy(BufferedImage SpriteSheet,int x,int y,int width,int height,ArrayList<Vector2> way)
+	private Rectangle rectangle;
+	
+	public Enemy(int x,int y,int width,int height,ArrayList<Vector2> way)
 	{
-		velocity=2;
+		startHelts=5;
+		helts=startHelts;
+		try {
+			heltImage=GameUtility.loadImage("res/helt.png");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		enabled=false;
+		velocity=1;
 	    speed=new Vector2(0,velocity);
 		animacije=new ArrayList<Animation>();
 		this.x=x;
@@ -38,25 +55,34 @@ public  class Enemy
 			waypoints.add(point);
 			System.out.println(point);
 		}
+		//rectangle=new Rectangle(x, y, width, height);
 		
 	}
 	
 	public void update()
 	{
+		if(enabled==true)
+		{
 		followWaypoints();
 		animatinCheck();
 		animacije.get(currentAinimation).update();
+		}
 	}
 	
 	private void followWaypoints()
 	{
 		
+		//Vector2 waypoint=waypoints.get(currentWaypoint);
+		//double distance=GameUtility.distance(x,y,waypoint.getX(),waypoint.getY());
+		if(currentWaypoint==waypoints.size() ||helts==0)
+		{
+			this.x=-50;
+			this.y=50;
+			enabled=false;
+			return;
+		}
 		Vector2 waypoint=waypoints.get(currentWaypoint);
 		double distance=GameUtility.distance(x,y,waypoint.getX(),waypoint.getY());
-		if(currentWaypoint==waypoints.size())
-		{
-			this.x=-1000;
-		}
 		System.out.println("distance"+distance+"  speedx"+speed.getX()+"    speedy"+speed.getY());
 		if(distance<Math.abs(speed.getX()) ||distance<Math.abs(speed.getY()))
 		{
@@ -78,7 +104,20 @@ public  class Enemy
 	
 	public void draw(Graphics g)
 	{
+		if(enabled==true)
+		{
+			
 		g.drawImage(animacije.get(currentAinimation).getFrame(),x,y,null);
+		g.setColor(Color.BLUE);
+		g.fillRect(this.x+width/2-(startHelts*heltImage.getWidth())/2,y-5,startHelts*5,5);
+		g.setColor(Color.WHITE);
+		for(int i=0;i<helts;i++)
+		{
+			//g.setColor(Color.BLUE);
+			//g.fillRect(this.x+width/2-(startHelts*heltImage.getWidth())/2,y-5,startHelts*5,5);
+			g.drawImage(heltImage,this.x+width/2-(startHelts*heltImage.getWidth())/2+i*5,this.y-5,5,5,null);
+		}
+		}
 	}
 
 	public int getX() {
@@ -149,6 +188,78 @@ public  class Enemy
 
 	public void setCurrentAinimation(int currentAinimation) {
 		this.currentAinimation = currentAinimation;
+	}
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+
+	public Vector2 getSpeed() {
+		return speed;
+	}
+
+	public void setSpeed(Vector2 speed) {
+		this.speed = speed;
+	}
+
+	public int getVelocity() {
+		return velocity;
+	}
+
+	public void setVelocity(int velocity) {
+		this.velocity = velocity;
+	}
+
+	public int getCurrentWaypoint() {
+		return currentWaypoint;
+	}
+
+	public void setCurrentWaypoint(int currentWaypoint) {
+		this.currentWaypoint = currentWaypoint;
+	}
+
+	public ArrayList<Vector2> getWaypoints() {
+		return waypoints;
+	}
+
+	public void setWaypoints(ArrayList<Vector2> waypoints) {
+		this.waypoints = waypoints;
+	}
+
+	public BufferedImage getHeltImage() {
+		return heltImage;
+	}
+
+	public void setHeltImage(BufferedImage heltImage) {
+		this.heltImage = heltImage;
+	}
+
+	public int getHelts() {
+		return helts;
+	}
+
+	public void setHelts(int helts) {
+		this.helts = helts;
+	}
+
+	public int getStartHelts() {
+		return startHelts;
+	}
+
+	public void setStartHelts(int startHelts) {
+		this.startHelts = startHelts;
+	}
+
+	public Rectangle getRectangle() {
+		return new Rectangle(x,y, width, height);
+	}
+
+	public void setRectangle(Rectangle rectangle) {
+		this.rectangle = rectangle;
 	}
 
 }

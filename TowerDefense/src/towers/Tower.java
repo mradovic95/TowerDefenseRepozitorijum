@@ -5,8 +5,13 @@ import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.ArrayList;
 
+import enemys.Bullet;
 import enemys.Enemy;
+import graphics.Vector2;
+import main_package.GameUtility;
 
 public class Tower 
 {
@@ -16,34 +21,84 @@ public class Tower
 	private BufferedImage turetImage;
 	AffineTransform tranform;
 	private double angle;
+	private Enemy target=null;
+	private double radius;
+	ArrayList<Bullet> bullets;
+	private long fireStartTime;
+	private long FireTime;
 	
 	public Tower(BufferedImage towerImage,BufferedImage turetImage,int x,int y) 
 	{
+		bullets=new ArrayList<Bullet>();
 		//tranform=new AffineTransform();
 		this.towerImage=towerImage;
 		this.turetImage=turetImage;
 		this.x=x;
 		this.y=y;
+		radius=1000;
+		FireTime=1000;
+		fireStartTime=System.nanoTime();
 	}
 	
-	public void update(Enemy enemy)
+	public void update(ArrayList<Enemy> enemyes)
 	{
 		
          
-		   
-         angle=Math.atan2((enemy.getX()-x),(enemy.getY()-y)*-1);
-        // System.out.println(x);
-         //System.out.println(enemy.getX());
-         //System.out.println(y);
-         //System.out.println(enemy.getY());
+		 getClosestEnemy(enemyes);
+		 if(target!=null)
+		 {
+			 long elapsedFireTime=(System.nanoTime()-fireStartTime)/1000000;
+			 if(elapsedFireTime>FireTime)
+			 {
+         angle=Math.atan2((target.getX()+50-x),(target.getY()-y)*-1);
+         Bullet b=new Bullet(x+25,y+25,5,5);
          
-         //System.out.println(Math.toDegrees(Math.atan2(enemy.getX()-x,enemy.getY()-y)));
-		  // AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
-
-		    //20, 20 is a height and width of img ofc
-		   //BufferedImage newImage =new BufferedImage(50, 50, turetImage.getType());
-		   //op.filter(newImage,turetImage);
-		   //this.turetImage=newImage;
+         try {
+			b.setImage(GameUtility.loadImage("res/helt.png"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+         b.setDirection(target);
+         bullets.add(b);
+             fireStartTime=System.nanoTime();
+			 }
+		 }
+		 for(Bullet b:bullets)
+		 {
+			 System.out.println("Target"+enemyes.indexOf(target));
+			 b.update();
+			 if(b.getRectangle().intersects(target.getRectangle()))
+			 {
+				 System.out.println("Udariloooooooooooooooooooooooooooooooooooooooooooo");
+				 b.setX(-1000);
+				 b.setEnabled(false);
+				 
+				 
+				 target.setHelts(target.getHelts()-b.getDamage());
+				 //target.setEnabled(false);
+				 //target.setX(-50);
+				 //target.setY(50);
+			 }
+		 }
+        
+	}
+	
+	private void getClosestEnemy(ArrayList<Enemy> enemyes)
+	{
+		target=null;
+		double smalestRange=radius;
+		for(Enemy e:enemyes)
+		{
+			if(e.isEnabled())
+			{
+			if(GameUtility.distance(x+25,y+25,e.getX(),e.getX())<smalestRange )
+			{
+				smalestRange=GameUtility.distance(x+25,y+25,e.getX(),e.getX());
+				target=e;
+			}
+			}
+		}
 	}
 	
 	public void draw(Graphics g)
@@ -53,9 +108,15 @@ public class Tower
 		transform.translate(x,y);
 		System.out.println(Math.toDegrees(angle));
 		transform.rotate(angle,25,25);
+		
 		//transform.translate(25,25);
 		 Graphics2D gr=(Graphics2D)g;
 		gr.drawImage(turetImage,transform,null);
+		for(Bullet b:bullets)
+		 {
+			 b.draw(g);
+		 }
+		
 	}
 
 	public int getX() {
