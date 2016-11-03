@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.annotation.Resource;
 import javax.imageio.ImageIO;
 
 import graphics.Animation;
@@ -25,9 +26,10 @@ public class EnemyManager
 	private BufferedImage slike3[];
     private	BufferedImage slike4[];
 	private Level lvl;
-	private long addEnemyTime=1500;
+	private long addEnemyTime=4000;
 	private int currentEnemy;
 	private long startTime;
+	private BufferedImage EffectAnimationsSheets[];
 	
 	
 	public EnemyManager(Level lvl)
@@ -72,13 +74,52 @@ public class EnemyManager
 			animation2.setFrames(slike2);
 			animation3.setFrames(slike3);
 			animation4.setFrames(slike4);
-			for(int i=0;i<20;i++)
+			EffectAnimationsSheets=new BufferedImage[4];
+			EffectAnimationsSheets[0]=GameUtility.getFrostEffect(spriteSheet);
+			EffectAnimationsSheets[1]=GameUtility.getFireEffect(spriteSheet);
+			EffectAnimationsSheets[2]=GameUtility.getLightningEffect(spriteSheet);
+			EffectAnimationsSheets[3]=GameUtility.getWindEffect(spriteSheet);
+			for(int i=0;i<50;i++)
 			{
 				Enemy en=new Enemy(-50,50,50,50,lvl.getWaypoints());
 				en.getAnimacije().add(animation1);
 				en.getAnimacije().add(animation2);
 				en.getAnimacije().add(animation3);
 				en.getAnimacije().add(animation4);
+				en.getVrsteAnimacija().add(en.getAnimacije());
+				for(int brojac=0;brojac<4;brojac++)
+				{
+					
+					BufferedImage tempSpriteSheet=EffectAnimationsSheets[brojac];
+					
+					ArrayList<Animation> tempAnimacije=new ArrayList<Animation>();
+					BufferedImage tempslike1[]=new BufferedImage[3];
+					BufferedImage tempslike2[]=new BufferedImage[3];	
+					BufferedImage tempslike3[]=new BufferedImage[3];
+				     BufferedImage tempslike4[]=new BufferedImage[3];
+				     for(int k=0;k<3;k++)
+						{
+							tempslike1[k]=GameUtility.cutImage(tempSpriteSheet,k,3,50,50);
+						}
+						for(int k=0;k<3;k++)
+						{
+							tempslike2[k]=GameUtility.cutImage(tempSpriteSheet,k,1,50,50);
+						}
+						for(int k=0;k<3;k++)
+						{
+							tempslike3[k]=GameUtility.cutImage(tempSpriteSheet,k,0,50,50);
+						}
+						for(int k=0;k<3;k++)
+						{
+							tempslike4[k]=GameUtility.cutImage(tempSpriteSheet,k,2,50,50);
+						}
+						tempAnimacije.add(new Animation(tempslike1));
+						tempAnimacije.add(new Animation(tempslike2));
+						tempAnimacije.add(new Animation(tempslike3));
+						tempAnimacije.add(new Animation(tempslike4));
+						en.getVrsteAnimacija().add(tempAnimacije);
+					
+				}
 				enemyes.add(en);
 				
 			}

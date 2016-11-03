@@ -3,9 +3,12 @@ package main_package;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
@@ -15,12 +18,13 @@ import graphics.Animation;
 import graphics.Vector2;
 import map.Level;
 import map.Map;
+import towers.Player;
 import towers.Tower;
 
-public class ExtendenGameWindow extends GameWindow
+public class ExtendenGameWindow extends GameWindow implements MouseListener
 {
 	
-	
+	private static ExtendenGameWindow instance;
 	Map map;
 	BufferedImage background_images;
 	BufferedImage spriteSheet;
@@ -35,15 +39,19 @@ public class ExtendenGameWindow extends GameWindow
 	BufferedImage slike3[];
 	BufferedImage slike4[];
 	BufferedImage turetImage;
-	Tower tower;
+	//Tower tower;
 	EnemyManager manager;
+	ArrayList<Tower> towers;
+	Player player;
 	
 	
 	
-	public ExtendenGameWindow(int width, int height) 
+	private ExtendenGameWindow(int width, int height) 
 	{
 		super(width, height);	
 		System.out.println(Math.toDegrees(Math.atan2(50,450)));
+		towers=new ArrayList<Tower>();
+		player=new Player(100);
 		
 	}
 
@@ -75,9 +83,10 @@ public class ExtendenGameWindow extends GameWindow
 				new Vector2(1050,600),new Vector2(1650,600),new Vector2(1650,650));
 		manager=new EnemyManager(level1);
 		manager.load();
+		addMouseListener(this);
+		player.load();
 		
-		
-		tower=new Tower(null,turetImage,200,200);
+		//tower=new Tower(null,turetImage,200,200);
 		
 		
 	}
@@ -103,18 +112,85 @@ public class ExtendenGameWindow extends GameWindow
 	@Override
 	public void update() {
 		manager.update();
-		tower.update(manager.enemyes);
-		
+		//tower.update(manager.enemyes);
+		for(Tower tower : towers)
+		{
+			tower.update(manager.enemyes);
+		}
+		player.update();
 	}
 
 	@Override
 	public void render(Graphics g) {
 		level1.draw(g);
 		manager.draw(g);
-		tower.draw(g);
+		//tower.draw(g);
+		for(Tower tower : towers)
+		{
+			tower.draw(g);
+		}
+		player.draw(g);
 		
 		
 		
 	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+		int x=e.getX();
+		int y=e.getY();
+		int poljeX=x/level1.getMap().getTileWidth();
+		int poljeY=y/level1.getMap().getTileHeight();
+		Tower t=new Tower(null,turetImage,poljeX*level1.getMap().getTileWidth(),poljeY*level1.getMap().getTileHeight());
+		towers.add(t);
+		//player.draw(g);
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public static ExtendenGameWindow getInstance() {
+		if(instance==null)
+		{
+			instance=new ExtendenGameWindow(1750,1000);
+		}
+		return instance;
+	}
+
+	public Player getPlayer() {
+		return player;
+	}
+
+	public void setPlayer(Player player) {
+		this.player = player;
+	}
+
+	
+
+	
+
+	
 }
 

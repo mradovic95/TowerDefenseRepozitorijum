@@ -1,10 +1,14 @@
 package main_package;
 
 import java.awt.image.BufferedImage;
+import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
+import java.nio.BufferUnderflowException;
 
 import javax.imageio.ImageIO;
+
+import rafgfxlib.Util;
 
 public final class GameUtility 
 {
@@ -37,5 +41,165 @@ public final class GameUtility
 	{
 		return Math.sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2));
 	}
+	
+	public static BufferedImage getFrostEffect(BufferedImage image)
+	{
+		if(image == null) { System.out.println("Nema slike!"); return null; }
+		//ImageViewer.showImageWindow(image, "RAF Racunarska Grafika");
+		WritableRaster source = image.getRaster();
+		WritableRaster target = Util.createRaster(source.getWidth(), source.getHeight(), true);
+		
+		int rgb[] = new int[4];
+		
+		for(int y = 0; y < source.getHeight(); y++)
+		{
+			for(int x = 0; x < source.getWidth(); x++)
+			{
+				System.out.println(rgb[3]);
+				source.getPixel(x, y, rgb);
+			
+				// Negativ slike dobijamo radeci komplement svih komponenti,
+				// odnosno, novoR = 255 - staroR, itd, gdje ce onda (0,0,0)
+				// postati (255,255,255), itd, sto i ocekujemo.
+				if(rgb[3]!=0)
+				{
+				rgb[0] = rgb[0]-50<=0?0:rgb[0]-50;
+					
+				
+				rgb[1]=rgb[1]-50<=0?0:rgb[1]-50;
+				
+				rgb[2] =255;
+				
+				}
+				
+				
+				
+				
+				
+				
+				target.setPixel(x, y, rgb);
+			}
+		}
+	    BufferedImage newImage=Util.rasterToImage(target);
+	    return newImage;
+	}
+	
+	public static BufferedImage getLightningEffect(BufferedImage image)
+	{
+		if(image == null) { System.out.println("Nema slike!"); return null; }
+		//ImageViewer.showImageWindow(image, "RAF Racunarska Grafika");
+		WritableRaster source = image.getRaster();
+		WritableRaster target = Util.createRaster(source.getWidth(), source.getHeight(), true);
+		
+		int rgb[] = new int[4];
+		
+		for(int y = 0; y < source.getHeight(); y++)
+		{
+			for(int x = 0; x < source.getWidth(); x++)
+			{
+				System.out.println(rgb[3]);
+				source.getPixel(x, y, rgb);
+			
+				// Negativ slike dobijamo radeci komplement svih komponenti,
+				// odnosno, novoR = 255 - staroR, itd, gdje ce onda (0,0,0)
+				// postati (255,255,255), itd, sto i ocekujemo.
+				if(rgb[3]!=0)
+				{
+				rgb[0] =255-rgb[0];
+				rgb[1]=255-rgb[1];
+				rgb[2] =255-rgb[2];
+				}
+				
+				
+				
+				
+				
+				
+				target.setPixel(x, y, rgb);
+			}
+		}
+	    BufferedImage newImage=Util.rasterToImage(target);
+	    return newImage;
+	}
+	
+	public static BufferedImage getWindEffect(BufferedImage image)
+	{
+		if(image == null) { System.out.println("Nema slike!"); return null; }
+		//ImageViewer.showImageWindow(image, "RAF Racunarska Grafika");
+		WritableRaster source = image.getRaster();
+		WritableRaster target = Util.createRaster(source.getWidth(), source.getHeight(), true);
+		
+		int rgb[] = new int[4];
+		
+		for(int y = 0; y < source.getHeight(); y++)
+		{
+			for(int x = 0; x < source.getWidth(); x++)
+			{
+				System.out.println(rgb[3]);
+				source.getPixel(x, y, rgb);
+			
+				// Negativ slike dobijamo radeci komplement svih komponenti,
+				// odnosno, novoR = 255 - staroR, itd, gdje ce onda (0,0,0)
+				// postati (255,255,255), itd, sto i ocekujemo.
+				if(rgb[3]!=0)
+				{
+					if(rgb[3]!=0)
+					{
+						rgb[3]=60;
+					}
+				}
+				
+				
+				
+				
+				
+				
+				target.setPixel(x, y, rgb);
+			}
+		}
+	    BufferedImage newImage=Util.rasterToImage(target);
+	    return newImage;
+	}
+	
+	public static BufferedImage getFireEffect(BufferedImage image)
+	{
+		if(image == null) { System.out.println("Nema slike!"); return null; }
+		//ImageViewer.showImageWindow(image, "RAF Racunarska Grafika");
+		WritableRaster source = image.getRaster();
+		WritableRaster target = Util.createRaster(source.getWidth(), source.getHeight(), true);
+		
+		int rgb[] = new int[4];
+		
+		for(int y = 0; y < source.getHeight(); y++)
+		{
+			for(int x = 0; x < source.getWidth(); x++)
+			{
+				System.out.println(rgb[3]);
+				source.getPixel(x, y, rgb);
+			
+				// Negativ slike dobijamo radeci komplement svih komponenti,
+				// odnosno, novoR = 255 - staroR, itd, gdje ce onda (0,0,0)
+				// postati (255,255,255), itd, sto i ocekujemo.
+				if(rgb[3]!=0)
+				{
+					rgb[0]=255;
+					rgb[1] = rgb[1]-50<=0?0:rgb[1]-50;
+						
+					
+					rgb[2]=rgb[2]-50<=0?0:rgb[2]-50;
+				}
+				
+				
+				
+				
+				
+				
+				target.setPixel(x, y, rgb);
+			}
+		}
+	    BufferedImage newImage=Util.rasterToImage(target);
+	    return newImage;
+	}
+
 
 }

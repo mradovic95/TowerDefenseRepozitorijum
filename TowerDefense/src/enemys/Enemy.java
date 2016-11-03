@@ -9,12 +9,15 @@ import java.util.ArrayList;
 
 import graphics.Animation;
 import graphics.Vector2;
+import main_package.ExtendenGameWindow;
 import main_package.GameUtility;
+import towers.Player;
 
 public class Enemy 
 {
 	private BufferedImage heltImage;
 	private boolean enabled;
+	private ArrayList<ArrayList<Animation>> vrsteAnimacija;
 	private ArrayList<Animation> animacije;
 	private int x;
 	private int y;
@@ -28,9 +31,15 @@ public class Enemy
 	private int currentWaypoint;
 	private ArrayList<Vector2> waypoints;
 	private Rectangle rectangle;
+	private boolean hasEffect=false;
+	private int currentVrsteAnimacija;
+	
+	
 	
 	public Enemy(int x,int y,int width,int height,ArrayList<Vector2> way)
 	{
+		
+		currentVrsteAnimacija=0;
 		startHelts=5;
 		helts=startHelts;
 		try {
@@ -40,8 +49,9 @@ public class Enemy
 			e.printStackTrace();
 		}
 		enabled=false;
-		velocity=1;
+		velocity=4;
 	    speed=new Vector2(0,velocity);
+	    vrsteAnimacija=new ArrayList<ArrayList<Animation>>();
 		animacije=new ArrayList<Animation>();
 		this.x=x;
 		this.y=y;
@@ -65,9 +75,11 @@ public class Enemy
 		{
 		followWaypoints();
 		animatinCheck();
-		animacije.get(currentAinimation).update();
+		vrsteAnimacija.get(currentVrsteAnimacija).get(currentAinimation).update();
 		}
 	}
+	
+	
 	
 	private void followWaypoints()
 	{
@@ -79,6 +91,10 @@ public class Enemy
 			this.x=-50;
 			this.y=50;
 			enabled=false;
+			ExtendenGameWindow.getInstance().getPlayer().setHelts(ExtendenGameWindow.getInstance().getPlayer().getHelts()-5);
+			ExtendenGameWindow.getInstance().getPlayer().setDamaged(true);
+			ExtendenGameWindow.getInstance().getPlayer().setDamagedStartTime(System.nanoTime());
+			
 			return;
 		}
 		Vector2 waypoint=waypoints.get(currentWaypoint);
@@ -107,7 +123,7 @@ public class Enemy
 		if(enabled==true)
 		{
 			
-		g.drawImage(animacije.get(currentAinimation).getFrame(),x,y,null);
+		g.drawImage(vrsteAnimacija.get(currentVrsteAnimacija).get(currentAinimation).getFrame(),x,y,null);
 		g.setColor(Color.BLUE);
 		g.fillRect(this.x+width/2-(startHelts*heltImage.getWidth())/2,y-5,startHelts*5,5);
 		g.setColor(Color.WHITE);
@@ -255,11 +271,35 @@ public class Enemy
 	}
 
 	public Rectangle getRectangle() {
-		return new Rectangle(x,y, width, height);
+		return new Rectangle(x,y, width+30, height+30);
 	}
 
 	public void setRectangle(Rectangle rectangle) {
 		this.rectangle = rectangle;
+	}
+
+	public boolean isHasEffect() {
+		return hasEffect;
+	}
+
+	public void setHasEffect(boolean hasEffect) {
+		this.hasEffect = hasEffect;
+	}
+
+	public ArrayList<ArrayList<Animation>> getVrsteAnimacija() {
+		return vrsteAnimacija;
+	}
+
+	public void setVrsteAnimacija(ArrayList<ArrayList<Animation>> vrsteAnimacija) {
+		this.vrsteAnimacija = vrsteAnimacija;
+	}
+
+	public int getCurrentVrsteAnimacija() {
+		return currentVrsteAnimacija;
+	}
+
+	public void setCurrentVrsteAnimacija(int currentVrsteAnimacija) {
+		this.currentVrsteAnimacija = currentVrsteAnimacija;
 	}
 
 }

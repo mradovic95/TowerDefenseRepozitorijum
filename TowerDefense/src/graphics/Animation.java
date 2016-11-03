@@ -9,7 +9,18 @@ public class Animation
     private long startTime;//poecetno vreme animacije
     private long delay;//vreme posle koga se prelazi na sledeci frejm
     public boolean playedonce;//da li se izvrsio jedan ciklus animacije
+    
+    public Animation() {
+		
+	}
 
+    public Animation(BufferedImage[] frames) {
+		// TODO Auto-generated constructor stub
+    	this.frames=frames;
+        currentFrame=0;
+        startTime=System.nanoTime();
+        delay=100;
+	}
     //metoda za ucitavanje frejmova animacije
     public void setFrames(BufferedImage[] frames)
     {

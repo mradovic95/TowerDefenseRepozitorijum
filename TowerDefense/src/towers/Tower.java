@@ -27,6 +27,7 @@ public class Tower
 	private long fireStartTime;
 	private long FireTime;
 	
+	
 	public Tower(BufferedImage towerImage,BufferedImage turetImage,int x,int y) 
 	{
 		bullets=new ArrayList<Bullet>();
@@ -52,6 +53,7 @@ public class Tower
 			 {
          angle=Math.atan2((target.getX()+50-x),(target.getY()-y)*-1);
          Bullet b=new Bullet(x+25,y+25,5,5);
+         b.setEnemy(target);
          
          try {
 			b.setImage(GameUtility.loadImage("res/helt.png"));
@@ -59,27 +61,38 @@ public class Tower
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-         b.setDirection(target);
+         //b.setDirection(target);
          bullets.add(b);
              fireStartTime=System.nanoTime();
 			 }
-		 }
+		 
 		 for(Bullet b:bullets)
 		 {
 			 System.out.println("Target"+enemyes.indexOf(target));
 			 b.update();
-			 if(b.getRectangle().intersects(target.getRectangle()))
+			 if(b.getRectangle().intersects(b.getEnemy().getRectangle()))
 			 {
+				 if(b.getEnemy().isHasEffect()==false)
+				 {
+				 
+				 //b.setEnemy(target);
+				 b.getBulletStrategy().setEnemyEfect(b.getEnemy());
+				 b.setSpicio(true);
+				 b.setEfectStartTime(System.nanoTime());
+				 b.getEnemy().setHasEffect(true);
+				 }
+				 
 				 System.out.println("Udariloooooooooooooooooooooooooooooooooooooooooooo");
 				 b.setX(-1000);
 				 b.setEnabled(false);
 				 
 				 
-				 target.setHelts(target.getHelts()-b.getDamage());
+				 b.getEnemy().setHelts(target.getHelts()-b.getDamage());
 				 //target.setEnabled(false);
 				 //target.setX(-50);
 				 //target.setY(50);
 			 }
+		 }
 		 }
         
 	}

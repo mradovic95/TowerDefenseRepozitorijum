@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Graphics;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferStrategy;
 
 public abstract class GameWindow extends Canvas implements KeyListener
@@ -45,6 +46,7 @@ public abstract class GameWindow extends Canvas implements KeyListener
 			parrent=parrent.getParent();
 		}
 		parrent.addKeyListener(this);	
+		//parrent.addMouseListener(this);
 		mainThread.setRunning(true);
 		mainThread.start();
 	}
