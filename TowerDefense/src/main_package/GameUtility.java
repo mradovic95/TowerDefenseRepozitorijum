@@ -200,6 +200,39 @@ public final class GameUtility
 	    BufferedImage newImage=Util.rasterToImage(target);
 	    return newImage;
 	}
+	
+	public static BufferedImage addBrightness(BufferedImage image,int brightness)
+	{
+        //image = Util.loadImage("doge.png");
+		
+		if(image == null) { System.out.println("Nema slike!"); return null; }
+		
+		WritableRaster source = image.getRaster();
+		WritableRaster target = Util.createRaster(source.getWidth(), source.getHeight(), false);
+		
+		int rgb[] = new int[4];
+		
+		
+		
+		for(int y = 0; y < source.getHeight(); y++)
+		{
+			for(int x = 0; x < source.getWidth(); x++)
+			{
+				source.getPixel(x, y, rgb);
+				
+				// Koristimo funkciju koju smo napravili da pojednostavimo
+				// ovu proceduru i skratimo kod.
+				rgb[0] = rgb[0]+brightness>255?255:rgb[0]+brightness;
+				rgb[1] = rgb[1]+brightness>255?255:rgb[1]+brightness;
+				rgb[2] = rgb[2]+brightness>255?255:rgb[2]+brightness;
+				
+				target.setPixel(x, y, rgb);
+			}
+		}
+	
+		// Konverzija rastera u BufferedImage i prikaz u prozoru
+		return Util.rasterToImage(target);
+	}
 
 
 }

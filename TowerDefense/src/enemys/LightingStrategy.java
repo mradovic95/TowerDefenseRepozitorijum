@@ -8,6 +8,10 @@ public class LightingStrategy implements BulletStrategy
 	public void setEnemyEfect(Enemy enemy) 
 	{	
 		enemy.setCurrentVrsteAnimacija(3);
+		enemy.setVelocity(0);
+		enemy.setStun(true);
+		enemy.setStarX(enemy.getX()-25);
+		enemy.setStarY(enemy.getY());
 		//if(Math.abs(enemy.getSpeed().getX())>0)
 		//{
 		//	enemy.setX(enemy.getX()-100);
@@ -29,8 +33,11 @@ public class LightingStrategy implements BulletStrategy
 		//{
 		//	enemy.getAnimacije().get(i).setDelay(enemy.getAnimacije().get(i).getDelay()/2);
 		//}
+		enemy.setVelocity(4);
 		enemy.setCurrentVrsteAnimacija(0);
 		enemy.setHasEffect(false);
+		enemy.setStun(false);
+		
 	}
 
 	@Override

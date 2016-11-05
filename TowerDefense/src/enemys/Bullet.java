@@ -1,14 +1,18 @@
 package enemys;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
+import animacije.TestNabod;
+import animacije.Tornado;
 import graphics.Vector2;
 import main_package.GameUtility;
 
 public class Bullet 
 {
+	Tornado tn=new Tornado(0, 0, 0, 0, new Color(255,0,0), new Color(255,155,110), new Color(0,0,0), 0);
 	private int x;
 	private int y;
 	private int width;
@@ -31,16 +35,18 @@ public class Bullet
 	{
 		enabled=true;
 		speed=new Vector2(0,0);
-		velocity=20;
+		velocity=10;
 		this.x=x;
 		this.y=y;
 		this.width=width;
 		this.heigth=heigth;
 		rectangle=new Rectangle(x, y,width,heigth);
 		this.damage=1;
-		this.bulletStrategy=new FrostStrategy();
+		this.bulletStrategy=new FireStrategy();
+		tn.setXY(x, y);
 	}
 	
+	/*
 	public void setDirection(Enemy target)
 	{
 		double distance=GameUtility.distance(x,y,target.getX(),target.getY());
@@ -49,6 +55,7 @@ public class Bullet
 		//this.x+=speed.getX();
 		//this.y+=speed.getY();
 	}
+	*/
 	
 	private void checkEffect()
 	{
@@ -73,13 +80,15 @@ public class Bullet
 		}
 		if(enabled==true)
 		{
+			tn.Update(enemy, velocity);
 			if(enemy.isEnabled()==false)
 			{
+				//setX(-1000);
 				enabled=false;
-				System.out.println("Pao je na falseeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
+				//System.out.println("Pao je na falseeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
 			}
 			double distance=GameUtility.distance(x,y,enemy.getX(),enemy.getY());
-			speed.setX((int)((enemy.getX()+50-this.x)*velocity/distance));
+			speed.setX((int)((enemy.getX()-this.x)*velocity/distance));
 			speed.setY((int)((enemy.getY()-this.y)*velocity/distance));
 		this.x+=speed.getX();
 		this.y+=speed.getY();
@@ -90,7 +99,7 @@ public class Bullet
 	{
 		if(enabled==true)
 		{
-		g.drawImage(image, x,y,null);
+		tn.Draw(g);
 		}
 	}
 

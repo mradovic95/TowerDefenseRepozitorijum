@@ -26,10 +26,12 @@ public class EnemyManager
 	private BufferedImage slike3[];
     private	BufferedImage slike4[];
 	private Level lvl;
-	private long addEnemyTime=4000;
+	private long addEnemyTime=3000;
 	private int currentEnemy;
 	private long startTime;
 	private BufferedImage EffectAnimationsSheets[];
+	private BufferedImage starImage;
+	
 	
 	
 	public EnemyManager(Level lvl)
@@ -53,6 +55,7 @@ public class EnemyManager
 		
 				
 		try {	
+			starImage=GameUtility.loadImage("res/star.png");
 			spriteSheet=GameUtility.loadImage("res/orc.png");
 			for(int i=0;i<3;i++)
 			{
@@ -86,6 +89,7 @@ public class EnemyManager
 				en.getAnimacije().add(animation2);
 				en.getAnimacije().add(animation3);
 				en.getAnimacije().add(animation4);
+				en.setStarImage(starImage);
 				en.getVrsteAnimacija().add(en.getAnimacije());
 				for(int brojac=0;brojac<4;brojac++)
 				{
@@ -137,11 +141,12 @@ public class EnemyManager
 	{
 		
 		long elapseTime=(System.nanoTime()-startTime)/1000000;
-		System.out.println(elapseTime);
+		//System.out.println(elapseTime);
 		if(elapseTime>addEnemyTime)
 		{
 			
 			enemyes.get(currentEnemy++).setEnabled(true);
+			enemyes.get(currentEnemy++).umro=false;
 			startTime=System.nanoTime();
 		}
 		if(currentEnemy==enemyes.size())
@@ -151,10 +156,10 @@ public class EnemyManager
 		
 		for(Enemy en:enemyes)
 		{
-			if(en.isEnabled()==true)
-			{
+			//if(en.isEnabled()==true)
+			//{
 				en.update();
-			}
+			//}
 		}
 		
 		
@@ -165,10 +170,10 @@ public class EnemyManager
 	{
 		for(Enemy en:enemyes)
 		{
-			if(en.isEnabled()==true)
-			{
+			//if(en.isEnabled()==true)
+			//{
 				en.draw(g);
-			}
+			//}
 		}
 	}
 

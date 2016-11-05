@@ -5,6 +5,7 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -21,7 +22,7 @@ import map.Map;
 import towers.Player;
 import towers.Tower;
 
-public class ExtendenGameWindow extends GameWindow implements MouseListener
+public class ExtendenGameWindow extends GameWindow implements MouseListener,MouseMotionListener
 {
 	
 	private static ExtendenGameWindow instance;
@@ -48,7 +49,9 @@ public class ExtendenGameWindow extends GameWindow implements MouseListener
 	
 	private ExtendenGameWindow(int width, int height) 
 	{
+		//setFocusable(true);
 		super(width, height);	
+		setFocusable(true);
 		System.out.println(Math.toDegrees(Math.atan2(50,450)));
 		towers=new ArrayList<Tower>();
 		player=new Player(100);
@@ -84,6 +87,10 @@ public class ExtendenGameWindow extends GameWindow implements MouseListener
 		manager=new EnemyManager(level1);
 		manager.load();
 		addMouseListener(this);
+		addKeyListener(this);
+		addMouseMotionListener(this);
+		//setFocusable(true);
+		
 		player.load();
 		
 		//tower=new Tower(null,turetImage,200,200);
@@ -94,7 +101,25 @@ public class ExtendenGameWindow extends GameWindow implements MouseListener
 	@Override
 	public void keyPressed(KeyEvent e) 
 	{
-		
+		System.out.println("pritisnutoooooooooooooooo");
+		if(e.getKeyCode()==KeyEvent.VK_1)
+		{
+			player.setCurrentState(0);
+			
+		}
+		if(e.getKeyCode()==KeyEvent.VK_2)
+		{
+			player.setCurrentState(1);
+		}
+		if(e.getKeyCode()==KeyEvent.VK_3)
+		{
+			player.setCurrentState(2);
+
+		}
+		if(e.getKeyCode()==KeyEvent.VK_4)
+		{
+			player.setCurrentState(3);
+		}
 	}
 
 	@Override
@@ -113,11 +138,8 @@ public class ExtendenGameWindow extends GameWindow implements MouseListener
 	public void update() {
 		manager.update();
 		//tower.update(manager.enemyes);
-		for(Tower tower : towers)
-		{
-			tower.update(manager.enemyes);
-		}
-		player.update();
+		
+		player.update(manager);
 	}
 
 	@Override
@@ -125,10 +147,7 @@ public class ExtendenGameWindow extends GameWindow implements MouseListener
 		level1.draw(g);
 		manager.draw(g);
 		//tower.draw(g);
-		for(Tower tower : towers)
-		{
-			tower.draw(g);
-		}
+		
 		player.draw(g);
 		
 		
@@ -155,13 +174,18 @@ public class ExtendenGameWindow extends GameWindow implements MouseListener
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+		
 		int x=e.getX();
 		int y=e.getY();
 		int poljeX=x/level1.getMap().getTileWidth();
 		int poljeY=y/level1.getMap().getTileHeight();
-		Tower t=new Tower(null,turetImage,poljeX*level1.getMap().getTileWidth(),poljeY*level1.getMap().getTileHeight());
-		towers.add(t);
+		//Tower t=new Tower(null,turetImage,poljeX*level1.getMap().getTileWidth(),poljeY*level1.getMap().getTileHeight());
+		//towers.add(t);
+		if(player.isMoze()==true && player.getMoney()>=100)
+		{
+		player.addTower(poljeX*level1.getMap().getTileWidth(),poljeY*level1.getMap().getTileHeight());
+		player.setMoney(player.getMoney()-200);
+		}
 		//player.draw(g);
 	}
 
@@ -185,6 +209,38 @@ public class ExtendenGameWindow extends GameWindow implements MouseListener
 
 	public void setPlayer(Player player) {
 		this.player = player;
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		int x=e.getX();
+		int y=e.getY();
+		int poljeX=x/level1.getMap().getTileWidth();
+		int poljeY=y/level1.getMap().getTileHeight();
+		player.setMouseX(poljeX*level1.getMap().getTileWidth());
+		player.setMouseY(poljeY*level1.getMap().getTileHeight());
+		if(poljeX>level1.getMap().getMapWidth() || poljeY>level1.getMap().getMapHeight())			
+		{
+			player.setMoze(false);
+		}
+		else
+		{
+			if(level1.getMap().getMap()[poljeY][poljeX]==1)
+			{
+				player.setMoze(false);
+			}
+			else {
+				player.setMoze(true);
+			}
+			//player.setMoze(true);
+		}
+		
 	}
 
 	

@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import animacije.kill;
 import graphics.Animation;
 import graphics.Vector2;
 import main_package.ExtendenGameWindow;
@@ -33,12 +34,17 @@ public class Enemy
 	private Rectangle rectangle;
 	private boolean hasEffect=false;
 	private int currentVrsteAnimacija;
-	
-	
+	kill k;
+	public boolean umro=false;
+	private BufferedImage starImage;
+	private int starX;
+	private int starY;
+	private int starVelocity;
+	private boolean stun;
 	
 	public Enemy(int x,int y,int width,int height,ArrayList<Vector2> way)
 	{
-		
+		stun=false;
 		currentVrsteAnimacija=0;
 		startHelts=5;
 		helts=startHelts;
@@ -56,6 +62,9 @@ public class Enemy
 		this.x=x;
 		this.y=y;
 		this.width=width;
+		starX=x-25;
+		starY=y-5;
+		starVelocity=5;
 		this.height=height;
 		currentAinimation=0;  
 		currentWaypoint=0;
@@ -65,6 +74,7 @@ public class Enemy
 			waypoints.add(point);
 			System.out.println(point);
 		}
+		
 		//rectangle=new Rectangle(x, y, width, height);
 		
 	}
@@ -75,8 +85,23 @@ public class Enemy
 		{
 		followWaypoints();
 		animatinCheck();
-		vrsteAnimacija.get(currentVrsteAnimacija).get(currentAinimation).update();
+		if(stun==true)
+		{
+			starUpdate();
 		}
+		vrsteAnimacija.get(currentVrsteAnimacija).get(currentAinimation).update();
+		}else if(umro){
+			k.Update(null, 0);
+		}
+	}
+	
+	private void starUpdate()
+	{
+		if(starX<this.x-25 || starX>this.x+35)
+		{
+			starVelocity*=-1;
+		}
+		starX+=starVelocity;
 	}
 	
 	
@@ -86,7 +111,7 @@ public class Enemy
 		
 		//Vector2 waypoint=waypoints.get(currentWaypoint);
 		//double distance=GameUtility.distance(x,y,waypoint.getX(),waypoint.getY());
-		if(currentWaypoint==waypoints.size() ||helts==0)
+		if(currentWaypoint==waypoints.size() )
 		{
 			this.x=-50;
 			this.y=50;
@@ -97,12 +122,22 @@ public class Enemy
 			
 			return;
 		}
+		if(helts<=0){
+			k=new kill(x+20,y+30,new Color(255, 133, 133),new Color(255, 0, 0));
+			this.x=-50;
+			this.y=50;
+			ExtendenGameWindow.getInstance().getPlayer().getCoinAnimation().setPlayedonce(false);
+			ExtendenGameWindow.getInstance().getPlayer().getCoinAnimation().setCurrentFrame(0);
+			ExtendenGameWindow.getInstance().getPlayer().setMoney(ExtendenGameWindow.getInstance().getPlayer().getMoney()+50);
+			enabled=false;
+			umro=true;
+		}
 		Vector2 waypoint=waypoints.get(currentWaypoint);
 		double distance=GameUtility.distance(x,y,waypoint.getX(),waypoint.getY());
-		System.out.println("distance"+distance+"  speedx"+speed.getX()+"    speedy"+speed.getY());
+		//System.out.println("distance"+distance+"  speedx"+speed.getX()+"    speedy"+speed.getY());
 		if(distance<Math.abs(speed.getX()) ||distance<Math.abs(speed.getY()))
 		{
-			System.out.println("usao1");
+			//System.out.println("usao1");
 			this.x=waypoint.getX();
 			this.y=waypoint.getY();
 			currentWaypoint++;
@@ -110,7 +145,7 @@ public class Enemy
 		}
 		else
 		{
-			System.out.println("usao2");
+			//System.out.println("usao2");
 			speed.setX((int)((waypoint.getX()-this.x)*velocity/distance));
 			speed.setY((int)((waypoint.getY()-this.y)*velocity/distance));
 			this.x+=speed.getX();
@@ -123,6 +158,21 @@ public class Enemy
 		if(enabled==true)
 		{
 			
+			if(stun==true)
+			{
+				if(starVelocity<0)
+				{
+					g.drawImage(vrsteAnimacija.get(currentVrsteAnimacija).get(currentAinimation).getFrame(),x,y,null);
+					g.drawImage(starImage, starX, starY,null);
+				}
+				else
+				{
+					g.drawImage(starImage, starX, starY,null);
+					g.drawImage(vrsteAnimacija.get(currentVrsteAnimacija).get(currentAinimation).getFrame(),x,y,null);
+				}
+			}
+			else
+			{
 		g.drawImage(vrsteAnimacija.get(currentVrsteAnimacija).get(currentAinimation).getFrame(),x,y,null);
 		g.setColor(Color.BLUE);
 		g.fillRect(this.x+width/2-(startHelts*heltImage.getWidth())/2,y-5,startHelts*5,5);
@@ -133,6 +183,9 @@ public class Enemy
 			//g.fillRect(this.x+width/2-(startHelts*heltImage.getWidth())/2,y-5,startHelts*5,5);
 			g.drawImage(heltImage,this.x+width/2-(startHelts*heltImage.getWidth())/2+i*5,this.y-5,5,5,null);
 		}
+			}
+		}else if(umro){
+			k.Draw(g);
 		}
 	}
 
@@ -300,6 +353,62 @@ public class Enemy
 
 	public void setCurrentVrsteAnimacija(int currentVrsteAnimacija) {
 		this.currentVrsteAnimacija = currentVrsteAnimacija;
+	}
+
+	public kill getK() {
+		return k;
+	}
+
+	public void setK(kill k) {
+		this.k = k;
+	}
+
+	public boolean isUmro() {
+		return umro;
+	}
+
+	public void setUmro(boolean umro) {
+		this.umro = umro;
+	}
+
+	public BufferedImage getStarImage() {
+		return starImage;
+	}
+
+	public void setStarImage(BufferedImage starImage) {
+		this.starImage = starImage;
+	}
+
+	public int getStarX() {
+		return starX;
+	}
+
+	public void setStarX(int starX) {
+		this.starX = starX;
+	}
+
+	public int getStarY() {
+		return starY;
+	}
+
+	public void setStarY(int starY) {
+		this.starY = starY;
+	}
+
+	public int getStarVelocity() {
+		return starVelocity;
+	}
+
+	public void setStarVelocity(int starVelocity) {
+		this.starVelocity = starVelocity;
+	}
+
+	public boolean isStun() {
+		return stun;
+	}
+
+	public void setStun(boolean stun) {
+		this.stun = stun;
 	}
 
 }

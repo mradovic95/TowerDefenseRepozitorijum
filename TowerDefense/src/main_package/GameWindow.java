@@ -45,7 +45,7 @@ public abstract class GameWindow extends Canvas implements KeyListener
 		{
 			parrent=parrent.getParent();
 		}
-		parrent.addKeyListener(this);	
+		//parrent.addKeyListener(this);	
 		//parrent.addMouseListener(this);
 		mainThread.setRunning(true);
 		mainThread.start();

@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import enemys.Bullet;
+import enemys.BulletStrategy;
 import enemys.Enemy;
 import graphics.Vector2;
 import main_package.GameUtility;
@@ -26,7 +27,7 @@ public class Tower
 	ArrayList<Bullet> bullets;
 	private long fireStartTime;
 	private long FireTime;
-	
+	private BulletStrategy strategy=null;
 	
 	public Tower(BufferedImage towerImage,BufferedImage turetImage,int x,int y) 
 	{
@@ -53,6 +54,7 @@ public class Tower
 			 {
          angle=Math.atan2((target.getX()+50-x),(target.getY()-y)*-1);
          Bullet b=new Bullet(x+25,y+25,5,5);
+         b.setBulletStrategy(strategy);
          b.setEnemy(target);
          
          try {
@@ -65,10 +67,10 @@ public class Tower
          bullets.add(b);
              fireStartTime=System.nanoTime();
 			 }
-		 
+		 } 
 		 for(Bullet b:bullets)
 		 {
-			 System.out.println("Target"+enemyes.indexOf(target));
+			 //System.out.println("Target"+enemyes.indexOf(target));
 			 b.update();
 			 if(b.getRectangle().intersects(b.getEnemy().getRectangle()))
 			 {
@@ -82,18 +84,18 @@ public class Tower
 				 b.getEnemy().setHasEffect(true);
 				 }
 				 
-				 System.out.println("Udariloooooooooooooooooooooooooooooooooooooooooooo");
+				 //System.out.println("Udariloooooooooooooooooooooooooooooooooooooooooooo");
 				 b.setX(-1000);
 				 b.setEnabled(false);
 				 
 				 
-				 b.getEnemy().setHelts(target.getHelts()-b.getDamage());
+				 b.getEnemy().setHelts(b.getEnemy().getHelts()-b.getDamage());
 				 //target.setEnabled(false);
 				 //target.setX(-50);
 				 //target.setY(50);
 			 }
 		 }
-		 }
+		 
         
 	}
 	
@@ -105,9 +107,9 @@ public class Tower
 		{
 			if(e.isEnabled())
 			{
-			if(GameUtility.distance(x+25,y+25,e.getX(),e.getX())<smalestRange )
+			if(GameUtility.distance(x,y,e.getX(),e.getX())<smalestRange )
 			{
-				smalestRange=GameUtility.distance(x+25,y+25,e.getX(),e.getX());
+				smalestRange=GameUtility.distance(x,y,e.getX(),e.getX());
 				target=e;
 			}
 			}
@@ -162,6 +164,70 @@ public class Tower
 
 	public void setTuretImage(BufferedImage turetImage) {
 		this.turetImage = turetImage;
+	}
+
+	public AffineTransform getTranform() {
+		return tranform;
+	}
+
+	public void setTranform(AffineTransform tranform) {
+		this.tranform = tranform;
+	}
+
+	public double getAngle() {
+		return angle;
+	}
+
+	public void setAngle(double angle) {
+		this.angle = angle;
+	}
+
+	public Enemy getTarget() {
+		return target;
+	}
+
+	public void setTarget(Enemy target) {
+		this.target = target;
+	}
+
+	public double getRadius() {
+		return radius;
+	}
+
+	public void setRadius(double radius) {
+		this.radius = radius;
+	}
+
+	public ArrayList<Bullet> getBullets() {
+		return bullets;
+	}
+
+	public void setBullets(ArrayList<Bullet> bullets) {
+		this.bullets = bullets;
+	}
+
+	public long getFireStartTime() {
+		return fireStartTime;
+	}
+
+	public void setFireStartTime(long fireStartTime) {
+		this.fireStartTime = fireStartTime;
+	}
+
+	public long getFireTime() {
+		return FireTime;
+	}
+
+	public void setFireTime(long fireTime) {
+		FireTime = fireTime;
+	}
+
+	public BulletStrategy getStrategy() {
+		return strategy;
+	}
+
+	public void setStrategy(BulletStrategy strategy) {
+		this.strategy = strategy;
 	}
 
 }
